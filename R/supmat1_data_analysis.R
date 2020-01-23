@@ -330,6 +330,12 @@ require(ggplot2)
         geom_line(
           size = 1.5
         ) +
+        geom_hline(
+          yintercept = 2.1,
+          size = 0.5,
+          color = 'red',
+          linetype = 'dashed'
+          ) +
         facet_grid( 
           reg ~ educ.fem 
           ) + 
@@ -366,8 +372,6 @@ require(ggplot2)
           strip.text.y     = element_text( size = 14 ),
           panel.grid.major = element_line( colour = "gray80", size = 0.25, linetype = 'dashed' ),
           panel.grid.minor = element_line( colour = "gray90", size = 0.15, linetype = 'dotted'  ),
-          panel.spacing    = unit( 2, "lines" ),
-          plot.margin      = margin( 1, 1, 0.5, 1, "cm" ),
           legend.direction = 'vertical'
           ) +
         scale_y_continuous( 
@@ -380,11 +384,9 @@ require(ggplot2)
         ) 
     }
   
-  x11(width = 15, height = 10)
+  x11(width = 10, height = 12)
   cfr.plot(cfrdatc5.plot)
-  cfr.plot(cfrdatc5.plot, 'North-Northeast')
-  cfr.plot(cfrdatc5.plot, 'South-Southeast')
-  cfr.plot(cfrdatc5.plot, 'Brazil')
+
   
 ##################################################################
   
