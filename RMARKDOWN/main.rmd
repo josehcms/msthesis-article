@@ -10,6 +10,16 @@ biblio-style: authoryear
 csl: comparative-population-studies.csl
 ---
 
+```{r echo = FALSE, message = FALSE}
+require(flextable)
+require(officer)
+require(dplyr)
+
+load('/home/josehcms/git-repository/msthesis-article/FIGS/tables1-4.RData')
+
+load('/home/josehcms/git-repository/msthesis-article/FIGS/table5.RData')
+
+```
 # Introduction
 
 Brazil observed a significant drop on its total fertility levels from 1960 [@merrick_berquo1983] and since 2010-2015 exhibits below replacement fertility levels [@berquo_cavenaghi2014;@castanheira_kohler2015;@lima_etal2018;@rios-neto_etal2018]. The Brazilian fertility transition was heterogeneous within country regions and social strata in terms of transition pace and starting period [@potter_etal2010]. 
@@ -33,11 +43,11 @@ This methodological approach permits the reconstruction of reproductive trends o
 
 This paper evaluates the cohort fertility of Brazilian educational pairings through the period of the country's fertility transition. We estimate the cohort fertility of women within specific educational pairings in order to account for male's educational influence on couple's reproductive decision making. Our analysis also reports regional trends to acknowledge historical regional inequalities in socioeconomic development.
 
-The present work promotes important discussions and bring major contributions to Brazilian demographic analysis. First of all, there are few works that evaluate cohort fertility patterns trends throughout the process of educational expansion. Additionally, this work contemplates the partner's influence on couple's reproductive decision making [@thomson1997;@vanbavel2017;@nitsche_etal2018]. This analysis shed light on hidden processes of fertility transition that acts within changes in gender norms and family structure by assessing reproductive achievements and conjugal educational profiles of several generations which experience different life course processes and thus display  diverse family formation processes. 
+The present work promotes important discussions and bring major contributions to Brazilian demographic analysis. First of all, there are few works that evaluate cohort fertility patterns trends throughout the process of educational expansion. Additionally, this work contemplates the partner's influence on couple's reproductive decision making [@thomson1997;@vanbavel2017;@nitsche_etal2018]. This analysis shed light on hidden processes of fertility transition that acts within changes in gender norms and family structure by assessing reproductive achievements and conjugal educational profiles of several generations which experience different life course processes and thus display diverse family formation processes. 
 
-We observed that cohort fertility rates display educational pairing differentials between male and female educational categories. In particular, couples in which both parents are lower educated showed the highest cohort fertility levels for older female cohorts. This values were diminishing along female cohorts and between males educational categories, controling for female's educational level. Thus, male partners education has effects on the fertility levels of the country. Regional disparities were observed, following historical patterns of socioeconomic inequalities.
+We observed that cohort fertility rates display educational pairing differentials between male and female educational categories. In particular, couples in which both parents are lower educated showed the highest cohort fertility levels, especially for older female cohorts. This values were diminishing through female cohorts evolution and between males educational categories, controlling for female's educational level. Thus, we observed significant evidence of male partner's education effects on cohort fertility levels of the country. Regional disparities were observed, following historical patterns of socioeconomic inequalities.
 
-Moreover, we saw that educational pairing composition changed significantly through the followed cohorts. in our decomposition exercise we estimated that 30% of the cohort fertility decline between forerunners (female cohorts born in 1925-39) and baby boomers (female cohorts born in 1955-69) were a result of changes in educational pairing composition. Hence, educational expansion fostered not only female's autonomy but also more commitment of males to fertility decision making and reduction of reproductive levels. 
+Also, educational pairing composition changed significantly through the followed cohorts. In a decomposition exercise we estimated that 30% of the cohort fertility decline between forerunner of fertility transition cohorts (female cohorts born in 1925-39) and medium-low fertility cohorts (female cohorts born in 1955-69) were a result of changes in educational pairing composition. Hence, educational attainment contributes for both males and females actitudes towards family planning and fertility control. 
 
 # Background
 
@@ -157,7 +167,7 @@ Then, we can evaluate compositional differences in terms of changig union educat
 
 We first turn our attention to analyse cohort fertility trends of educational pairings following CFR of five-year grouped female cohorts for Brazil and its grouped regions (figure 1). Each panel of figure 1 presents a fixed educational attainment level for females and each line represents the male partner's educational attainment level. Thus, distances between lines of the same graph (panel) represent fertility differentials among male partners educational categories.
 
-[Figure 1. Educational pairings cohort fertility trends for female birth cohorts grouped in five-year intervals for Brazil and Regions. Source: Brazilian national censuses 1970, 1980, 1991, 2000, 2010.]
+[Figure 1 about here]
 
 For the country as a whole, we observe marked fertility differentials for both male and female partners between different female birth cohorts. For older female cohorts, couples with at least one partner without complete primary school presented higher fertility levels than other pairings. Male partners low educational levels seems to have contributed to slow down fertility transition process. This is noted by the high CFRs estimated for older female cohorts with partners of the least educational attainment level. However, increasing female education through cohorts minimized differences of CFR between male partner's educational categories and fomented the transition process [@merrick_berquo1983]. Female education increase bargaing power and autonomy of women in family decision making [@jejeebhoy1995]. Therefore, women of higher schooling have reproductive profiles less attached to their husband's educational characteristics and more related to females own socioeconomic status and perceived opportunity costs of reproduction [@becker1993].
 
@@ -179,13 +189,13 @@ Next, we will investigate the differences observe between cohort observed differ
 
 Tables 1 to 4 present the composition of educational pairings and estimated CFR of each pairing for female birth cohorts born in 1925-39, 1940-54 and 1955-69 for Brazil and regions. 
 
-[TABLE 1: Educational pairings prevalence rates and cohort fertility rates for female cohorts born in 1925-39, 1940-54 and 1955-69 - Brazil. Source: Brazilian National Censuses, 1970, 1980, 1991, 2000, 2010.]
+[Table 1 about here]
 
-[TABLE 2: Educational pairings prevalence rates and cohort fertility rates for female cohorts born in 1925-39, 1940-54 and 1955-69 - Central-West region. Source: Brazilian National Censuses, 1970, 1980, 1991, 2000, 2010.]
+[Table 2 about here]
 
-[TABLE 3: Educational pairings prevalence rates and cohort fertility rates for female cohorts born in 1925-39, 1940-54 and 1955-69 - North-Northeast region. Source: Brazilian National Censuses, 1970, 1980, 1991, 2000, 2010.]
+[Table 3 about here]
 
-[TABLE 4: Educational pairings prevalence rates and cohort fertility rates for female cohorts born in 1925-39, 1940-54 and 1955-69 - South-Southeast region. Source: Brazilian National Censuses, 1970, 1980, 1991, 2000, 2010.]
+[Table 4 about here]
 
 We verify that educational homogamy fell in all regions due to decreases in prevalence rates of LP-LP educational pairings. Even though educational homogamy within higher educational categories has increased, it was not sufficient to outnumber the decrease in LP-LP educational pairing prevalence. Hence, homogamy was high in the past because of overall lower levels of education of the population [@esteve_mcaa2007;@ribeiro_silva2009]. Additionally, as women benefited the most from educational expansion [@beltrao_alves2009], Brazil observed considerable compositional changes in population educaitonal levels [@figoli2006] and the prevalence of hipogamic couples rose significantly over the period as hipergamy showed a steady decline [@esteve_etal2016].
 
@@ -195,12 +205,56 @@ North-Northeast regions had a slower transition from high low education homogamy
 
 The Southern areas of the country observed the most intense compositional changes in educational pairings. They presented the lowest lower education homogamy levels of the country and a later process of hipogamy increase. These regions benefited the most from educational expansion, and therefore, they observed the highest increase of heterogamic couples' prevalence rates. The region was the forerunner of the educational expansion due to the industrialization process [@komatsu_etal2017]. The industrial labor market is male-dominated and requires technical skills achieved through professional education [@romanelli1986]. Hence, this higher educated male population of the Sourthern regions resulted in the later process of hipogamy increase.
 
-Table 5 present the overall CFR for these three cohorts for each region and also the results of decomposition exercises. Generally, for Brazil and its regions, most of the reduction of conjugal CFRs were due to effects intrinsic to rate decline (70%), many oh those already mentioned. The remaining 30% of the differences among older and younger cohorts were because of changes in educational pairing composition. Therefore, a substantial part of the cohort fertility decline of the country occurred as a result of educational expansion and schooling not only for women, but also for men. This compositional effect is pratically 100% concentrated in the reduction of lower education homogamy.
+Table 5 present the overall CFR for these three cohorts for each region and also the results of decomposition exercises. In general, for Brazil and its regions, most of the reduction of conjugal CFRs were driven by unobservable effects of rate decline (70%). Most of these rate effects are explanied by the works of @faria1989 and @martine1996, which we have already mentioned. The remaining 30% of the differences among older and younger cohorts are explained by changes in educational pairing composition. So, a substantial part of the cohort fertility decline of the country occurred as a result of educational expansion and schooling not only for women, but also for men. This compositional effect is concentrated in the reduction of lower education homogamy.
 
-[TABLE 5]
+[Table 5 about here]
 
-Therefore, male's educational attainment also contributes for fertility reduction, since more education means more commitment of men to household activities [citar] and this lowers contraints to female reproduction and promotes the fulfillment of fertility intentions [citar]. In regions where the education of males lagged in relation to others (North-Northeast), fertility transition was slower and females reproductive autonomy was also weaker due to cultural aspects and prevailing social norms of the region in the past [citar].
+In this sense, male's educational attainment also contributes for fertility reduction, since more education means more commitment of men to household activities [@mcdonald2000;@esping-andersen2009] and this lowers contraints to female reproduction and promotes the fulfillment of fertility intentions [@folbre1994]. In regions where the education expansion of males lagged in relation to others (North-Northeast), fertility transition was slower and females reproductive autonomy was also weaker due to cultural aspects and prevailing patriarchal social norms of the region in the past [@folbre1983;@aguiar2000].
 
 # Conclusions
 
 # References
+
+<div id="refs"></div>
+
+\newpage
+Figure 1. Educational pairings cohort fertility trends for female birth cohorts grouped in five-year intervals for Brazil and Regions. Source: Brazilian national censuses 1970, 1980, 1991, 2000, 2010.
+ ![](/home/josehcms/git-repository/msthesis-article/FIGS/plot_cfr_5year_cohort.png) 
+ 
+\newpage
+Table 1: Educational pairings prevalence rates and cohort fertility rates for female cohorts born in 1925-39, 1940-54 and 1955-69 - Brazil. Source: Brazilian National Censuses, 1970, 1980, 1991, 2000, 2010.
+
+```{r echo = FALSE, message = FALSE}
+tab1_br
+```
+
+\newpage
+Table 2: Educational pairings prevalence rates and cohort fertility rates for female cohorts born in 1925-39, 1940-54 and 1955-69 - Central-West region. Source: Brazilian National Censuses, 1970, 1980, 1991, 2000, 2010.
+
+```{r echo = FALSE, message = FALSE}
+tab2_co
+```
+
+\newpage
+Table 3: Educational pairings prevalence rates and cohort fertility rates for female cohorts born in 1925-39, 1940-54 and 1955-69 - North-Northeast regions. Source: Brazilian National Censuses, 1970, 1980, 1991, 2000, 2010.
+
+```{r echo = FALSE, message = FALSE}
+tab3_nne
+```
+
+\newpage
+Table 4: Educational pairings prevalence rates and cohort fertility rates for female cohorts born in 1925-39, 1940-54 and 1955-69 - South-Southeast regions. Source: Brazilian National Censuses, 1970, 1980, 1991, 2000, 2010.
+
+```{r echo = FALSE, message = FALSE}
+tab4_sse
+```
+
+\newpage
+Table 5: Overall cohort fertility rates and decomposition of rates in CFR and Pairing Composition effects for female birth cohorts born in 1925-39, 1940-54, 1955-69 - Brazil and regions. Source: Brazilian National Censuses, 1970, 1980, 1991, 2000, 2010.
+
+```{r echo = FALSE, message = FALSE}
+tab5_cfrcomp %>%
+  width( j = 1, width = 2.5 ) %>%
+  width (j = 2:5, width = 1 )
+```
+\newpage

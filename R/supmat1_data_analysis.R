@@ -263,8 +263,70 @@ require(ggplot2)
                   )]
   
   write.csv2( tab1, 'FIGS/prevcfr_tab_data.csv', row.names = F )
-  # compute standardized cfr by educ pairing prevalence in the cohort (R) 
-  # and the standirdized prevalence by cfr distribution (I)
+ 
+  # prepare tables for document
+  preptab_docx <- function( tab1 ){
+    
+    require(flextable)
+    require(officer)
+    
+    ft_tab1 <- flextable( tab1[,2:9] )
+    
+    ft_tab1 <- set_header_labels( ft_tab1, 
+                                  educ.fem = "Education",
+                                  educ.mal = "Education", 
+                                  prevc1 = "Prevalence (%)",
+                                  prevc2 = "Prevalence (%)" , 
+                                  prevc3 = "Prevalence (%)",
+                                  cfrc1 = "CFR" , 
+                                  cfrc2 = "CFR",
+                                  cfrc3 = "CFR" )
+    
+    ft_tab1 <- 
+      merge_at( ft_tab1, 
+                i = 1, 
+                j = 1:2, 
+                part = "header" )
+    ft_tab1 <- 
+      merge_at( ft_tab1, 
+                i = 1, 
+                j = 3:5, 
+                part = "header" )
+    
+    ft_tab1 <- 
+      merge_at( ft_tab1, 
+                i = 1, 
+                j = 6:8, 
+                part = "header" )
+    
+    ft_tab1 <- 
+      add_header_row( ft_tab1, 
+                      values = c("Female", "Male", 
+                                 "1925-39", "1940-54", 
+                                 "1955-69", "1925-39", 
+                                 "1940-54", "1955-69" ), 
+                      top = FALSE )
+    
+    ft_tab1 <- 
+      align( ft_tab1, align = "center", part = "all" )
+    
+    ft_tab1 <- 
+      hline( ft_tab1, 
+             i = 2,
+             border = fp_border( color = 'black' ),
+             part = 'header' )
+    
+    return(ft_tab1)
+    
+  }
+  
+  tab1_br <- preptab_docx( tab1[ reg == 'Brazil' ] )
+  tab2_co <- preptab_docx( tab1[ reg == 'Central-West' ] )
+  tab3_nne <- preptab_docx( tab1[ reg == 'North-Northeast' ] )
+  tab4_sse <- preptab_docx( tab1[ reg == 'South-Southeast' ] )
+  
+  save( tab1_br, tab2_co, tab3_nne, tab4_sse,
+        file = 'FIGS/tables1-4.RData')
   
   cfr_decomp <- function( CFR1, P1, CFR2, P2 ){
     
@@ -356,6 +418,32 @@ require(ggplot2)
                                     "CFR(1940-54) - CFR(1955-69)", "CFR effect3", "Pairing composition effect3" ) )] %>%
     setorder( info )
   
+  tab2[ grepl( 'CFR effect', info ), 
+        info := 'CFR Effect' ]
+  tab2[ grepl( 'Pairing composition', info ), 
+        info := 'Pairing Composition Effect' ]
+  
+  tab5_cfrcomp <- 
+    flextable( tab2 ) %>%
+    set_header_labels( info = '' ) %>%
+    align( j = 2:5, align = "right", part = "body" ) %>%
+    align( i = c( 5, 6, 8, 9, 11, 12 ), 
+           j = 1, 
+           align = "right", part = "body" ) %>%
+    align( i = c( 1, 2, 3, 4, 7, 10 ), 
+           j = 1, 
+           align = "left", part = "body" ) %>%
+    align( align = 'center', part = 'header' ) %>%
+    hline( i = c( 1, 2, 3, 4, 6, 7, 9, 10 ),
+           border = fp_border( color = 'black' ),
+           part = 'body' ) %>%
+    bold( part = 'header' ) %>%
+    bold( i = c( 1, 2, 3, 4, 7, 10 ),
+          j = 1,
+          part = 'body' )
+
+
+  save( tab5_cfrcomp, file = 'FIGS/table5.RData' )
   
   write.csv2( tab2, 'FIGS/decomp_tab_data.csv', row.names = F )
   
