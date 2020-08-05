@@ -11,6 +11,7 @@ csl: demographic-research.csl
 
 header-includes:
   \usepackage{amsmath}
+  
 ---
 
 ```{r echo = FALSE, message = FALSE}
@@ -27,22 +28,22 @@ load('/home/josehcms/git-repository/msthesis-article/FIGS/table5.RData')
 # Abstract
 
 ## BACKGROUND
-The fertility transition in Brazil was fomented by multiple socioeconomic transformations that took place from 1930s on-wards. The education expansion was an important component of this transition by promoting changes in social norms and in assortative matching profiles.
+The fertility transition in Brazil was the result of multiple socioeconomic transformations that initiated from 1930s on-wards. The education expansion plays an important role in this process by promoting changes in social norms and in assortative matching profiles.
 
 ## OBJECTIVE
-This paper estimates the effects of male partners educational characteristics on reproductive behavior of couples for Brazil and regions during the fertility transition. We also address the effects of changes in educational pairings composition. 
+This paper estimates effects of male partners' education on reproductive behavior of couples for Brazil and its regions during the process of fertility transition, taking into account the effects of changes in educational pairings composition.
 
 ## METHODS
-We compute cohort fertility rates (CFR) for groups of educational pairings of couples for female cohorts born in 1925-1969. The decline of CFR was decomposed in compositional effects and rate effects using demographic techniques of decomposition of rates [@dasgupta1993]. 
+We compute cohort fertility rates (CFRs) for groups of educational pairings, considering the female cohorts born between the years 1925-1969. The CFRs decline were decomposed between compositional and rate effects using @dasgupta1993 decomposition methods. 
 
 ## RESULTS
-Couple’s CFR fell from 6.30 to 2.94 between 1925-1939 and 1955-1969 female birth cohorts. Educational pairing composition changes accounted for approximately 30% of it. Increases in male schooling, especially from lower educational levels to complete primary, resulted in reductions of CFR controlling for female schooling levels.
+In the country, the couple's CFR fell from 6.30 to 2.94 between the analyzed cohorts. Educational pairing composition accounted for approximately 30% of these changes in cohort fertility. Increases in male schooling, especially the jump from incomplete to complete primary education, resulted in significant CFRs reductions, even controlling for female schooling levels.
 
 ## CONCLUSIONS
-Our results suggest that males play important roles in family size decision making, especially for older female cohorts. We argue that the slower educational expansion observed for males might have slowed down the pace of fertility transition in the country.
+Results suggest that males’ education does affect family size, especially considering older cohorts couples. Additionally, we argue that to a certain extent, a slower male educational expansion might have restrained the pace of fertility transition in some regions of the country.
 
 ## CONTRIBUTION
-The cohort analysis approach in fertility studies and the evaluation of male schooling influence in reproductive decision making of couples represent alternatives to Brazilian fertility analysis and provide new perspectives on the reproductive behavior of families and family relations.
+The cohort analysis and male schooling influences on family size represent good tools to understand Brazilian fertility transition, and it also provides new perspectives of analyses for other Latin American countries that have experienced a similar reproductive decline process.
 
 # 1. Introduction
 
@@ -66,7 +67,7 @@ The present work promotes important discussions and brings major contributions t
 
 ## 2.1 Fertility decline and school expansion in Brazil
 
-The Fertility Transition process in Brazil is well documented by many studies. One remarkable characteristic of this process was the contrastend fertility levels among distinguished socioeconomic groups, as for example highly educated social groups already adopted a new reproductive behavior, well previous the beginning of the generalized decline of Brazilian fertility [@merrick_berquo1983], and a second noteworthy characteristic is that, compared to more developed regions, in a short period of time the fertility rates of the country from different social strata converged into replacement fertility [@berquo_cavenaghi2014], and more recently the TFR is below population replacement levels [@castanheira_kohler2015]. One particular element that contributed for this rapid transition and fertility convergence processes was the diffusion of contraceptive methods, in particular of female sterilization and the dissemination of contraceptive pill [@merrick_berquo1983;@martine1996;@perpetuo_wajnman1998;@perpetuo_wong2009]. Additionally, the uneven, or in some cases inexistent, access to family planning brought negative implications to the most vulnerable social groups [@carvalho_brito2005]. 
+The Fertility Transition process in Brazil is well documented by many studies. One remarkable characteristic of this process was the contrasting fertility levels among distinguished socioeconomic groups, as for example highly educated social groups already adopted a new reproductive behavior, well previous the beginning of the generalized decline of Brazilian fertility [@merrick_berquo1983], and a second noteworthy characteristic is that, compared to more developed regions, in a short period of time the fertility rates of the country from different social strata converged into replacement fertility [@berquo_cavenaghi2014], and more recently the TFR is below population replacement levels [@castanheira_kohler2015]. One particular element that contributed for this rapid transition and fertility convergence processes was the diffusion of contraceptive methods, in particular of female sterilization and the dissemination of contraceptive pill [@merrick_berquo1983;@martine1996;@perpetuo_wajnman1998;@perpetuo_wong2009]. Additionally, the uneven, or in some cases inexistent, access to family planning brought negative implications to the most vulnerable social groups [@carvalho_brito2005]. 
 
 In the country, the low socioeconomic strata generally made use of more harmful and unreliable contraceptive methods (the only methods usually available for them). They mainly used sterilization and clandestine abortion as way to avoid furthers pregnancies, whereas wealthier families consumed other safer contraceptive methods, and they applied female sterilization only when their family size goals was achieved [@faria1997; @martine1996; @perpetuo_wajnman1998; @perpetuo_wong2009]. Nowadays, despite similar fertility levels, social groups also present different fertility timing, with lower educated women entering more frequently into motherhood at younger ages than their higher educated peers [@lima_etal2018], and fertility postponement being more common among this last group of women [@rios-neto_etal2018; @lima_etal2018].
 
@@ -115,7 +116,7 @@ Taking all that into consideration, in the next sections, we will try to analyze
 
 ## 3.1 Data
 
-We use data collected via IPUMS-International from Brazilian National Censuses of 1970, 1980, 1991, 2000 and 2010, conducted by the Brazilian Institute of Geography and Statistics (IBGE, from Portuguese *Instituto Brasileiro de Geografia e Estatística*).). The IPUMS data is harmonized in time and space, which allows for comparison of different demographic scenarios and areas without the need for compatibilization [@esteve_sobek2003;@ipums2018].
+We use data collected via IPUMS-International from Brazilian National Censuses of 1970, 1980, 1991, 2000 and 2010, conducted by the Brazilian Institute of Geography and Statistics (IBGE, from Portuguese *Instituto Brasileiro de Geografia e Estatística*). The IPUMS data is harmonized in time and space, which allows for comparison of different demographic scenarios and areas without the need for compatibilization [@esteve_sobek2003;@ipums2019].
 
 With the available information in the censuses, we have identified the educational level of household members, number of children ever born to each woman in the household and their respective partners. This identification is done through the following variables: household serial number, marital status and relationship with the household head. These three pieces of information permitted us to pair women with their respective partners, and to link the couple's educational attainment level information with the number of children ever born. We used educational attainment levels available in four levels at IPUMS: 1) Less than Primary Education (LP), 2) Complete Primary Education (P), 3) Complete Secondary Education (S) and 4) Complete Tertiary Education (T). 
 
@@ -129,11 +130,11 @@ Finally, we also analyzed cohort fertility taken into account the regional socio
 
 ## 3.2 Cohort fertility trends of educational pairings
 
-Assuming the mentioned conditions and the educational categories, we estimated cohort fertility rates for each educational pairing profile by:
+Assuming the mentioned conditions and the educational categories, we estimated cohort fertility rates for each educational pairing profile by
 
-$$ CFR_{F,M}^{t} = \frac{CHBORN_{F,M}^{t}} {W_{F,M}^{t}} $$ 
+$$ CFR_{F,M}^{t} = \frac{CHBORN_{F,M}^{t}} {W_{F,M}^{t}}, $$ 
 
-Where,
+where,
 
 * $CFR_{F,M}^{t}$: Cohort Fertility Rates for cohorts of women born in time t with an educational attainment level F married/in-union with a partner that reached an educational attainment level M;
 
@@ -157,15 +158,15 @@ In a second moment, we computed CFR for three female cohorts corresponding to a 
 
 Taking more cohorts into consideration made it possible to evaluate even the tertiary education influence on cohort fertility, and decompose the effects of educational expansion and changing conjugal profiles in fertility by comparing each cohort group separately. We apply a demographic decomposition method [@dasgupta1993], performed by @yoo2014, to assess both influence of educational pairings (*composition effects*) and cohort (*rate effects*) on fertility differentials ($ \Delta CFR $). 
 
-The overall CFR for a given period T is computed by:
+The overall CFR for a given period T is computed by
 
-$$ CFR^T = \sum_i^{ep} CFR^T_{ep} P^T_{ep} $$ 
+$$ CFR^T = \sum_i^{ep} CFR^T_{ep} P^T_{ep}. $$ 
 
-Further, the differences in CFR from time T1 to time T2 are given by:
+Further, the differences in CFR from time T1 to time T2 are given by
 
-$$ \Delta CFR_{12} = CFR^{T1} - CFR^{T2}  = \sum_i^{ep} CFR^{T1}_{ep} P^{T1}_{ep} - \sum_i^{ep} CFR^{T2}_{ep} P^{T2}_{ep} $$ 
+$$ \Delta CFR_{12} = CFR^{T1} - CFR^{T2}  = \sum_i^{ep} CFR^{T1}_{ep} P^{T1}_{ep} - \sum_i^{ep} CFR^{T2}_{ep} P^{T2}_{ep}, $$ 
 
-Where,
+where,
 
 * $T$ is the female cohort birth period that assume 3 cohort intervals: T = {1925-39, 1940-54, 1955-69};
 
@@ -190,11 +191,11 @@ Second, only cohabiting couples from the same household are considered in the es
 
 ## 4.1 Educational pairings cohort fertility trends in Brazil
 
-First we turn our attention to analyze cohort fertility trends of educational pairings, following the CFRs of five-year grouped female cohorts for Brazil and its regions (figure 1). Each panel of figure 1 presents a fixed educational attainment level for females and each line represents the male partner’s educational attainment level. The distances between lines of the same graph (panel) represent fertility differentials among male partners' educational categories, i.e. the effect of male schooling in cohort fertility.
+First we turn our attention to analyze cohort fertility trends of educational pairings, following the CFRs of five-year grouped female cohorts for Brazil and its regions (Figure 1). Each panel of Figure 1 presents a fixed educational attainment level for females and each line represents the male partner’s educational attainment level. The distances between lines of the same graph (panel) represent fertility differentials among male partners' educational categories, i.e. the effect of male schooling in cohort fertility.
 
 For the country as a whole, we observe marked fertility differentials for both male and female partners. For older female born cohorts, couples with at least one partner without complete primary school presented higher fertility levels than other pairings. Male partners' low educational levels seem to have contributed to the slow down of the fertility transition in Brazil. However, increasing female education across cohorts has minimized differences in CFR between male partner’s educational categories and it has induced fertility reductions [@merrick_berquo1983]. Female education increases bargaining power and autonomy of women in family decision making [@jejeebhoy1995]. Therefore, high schooled women have reproductive profiles less attached to their husband’s educational characteristics and more related to females own socioeconomic status and perceived opportunity costs of reproduction [@becker1993].
 
-Figure 1. Educational pairings cohort fertility trends for female birth cohorts grouped in five-year intervals for Brazil and Regions. Source: Brazilian national censuses 1970, 1980, 1991, 2000, 2010.
+Figure 1. Educational pairings cohort fertility trends for female birth cohorts grouped in five-year intervals for Brazil and regions. Source: Brazilian national censuses 1970, 1980, 1991, 2000, 2010.
  ![](/home/josehcms/git-repository/msthesis-article/FIGS/plot_cfr_5year_cohort.png) 
 
 The Midwest region presented a CFR transition similar to the one observed for the country as a whole. In this region, male schooling influenced more fertility of old cohorts commonly composed by women with low education. Additionally, as women achieved higher schooling levels, the effects of partner’s educational differentials diminished, and CFRs got closer to replacement fertility levels. Younger cohorts exhibit similar CFR values for all educational categories of the partner and converge towards population replacement levels.

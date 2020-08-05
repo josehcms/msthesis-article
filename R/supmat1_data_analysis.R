@@ -509,19 +509,19 @@ require(ggplot2)
           # title = paste0( "Cohort Fertility Rates by Educational Pairing of Couples - "), 
           # subtitle = "Women Born in 1925-1969, five-year interval",
           # caption = "Source: IPUMS-International",
-          x = "\nFemale Cohort Year of Birth", 
-          y = "Cohort Fertility Rates\n", 
+          x = "\nFemale cohort year of birth", 
+          y = "Cohort fertility rates (CFR)\n", 
           color = ""
           ) +
         scale_color_manual( 
-          labels = c( "Less than Primary", "Primary", "Secondary/Tertiary", "Tertiary" ), 
+          labels = c( "Less than primary", "Primary", "Secondary/Tertiary", "Tertiary" ), 
           values = c( "black", "gray35", "tomato3", "navyblue" ),
-          name = "Male Educational\nAttainment Level" 
+          name = "Male educational\nattainment level" 
           ) +
         scale_linetype_manual( 
-          labels = c( "Less than Primary", "Primary", "Secondary/Tertiary", "Tertiary" ), 
+          labels = c( "Less than primary", "Primary", "Secondary/Tertiary", "Tertiary" ), 
           values = c( "solid", "longdash", "dashed", "dotted" ),
-          name = "Male Educational\nAttainment Level" 
+          name = "Male educational\nattainment level" 
         ) +
         theme_bw() +
         theme(
