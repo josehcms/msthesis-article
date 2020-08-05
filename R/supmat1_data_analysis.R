@@ -4,7 +4,7 @@
 ### Supplementary material 2 - data analysis
 ##################################################################
 
-### 1. Housekeeping and package loading #-------------------------
+### 1. Load packages #--------------------------------------------
 rm(list = ls())
 graphics.off()
 
@@ -24,13 +24,14 @@ require(ggplot2)
 
   rm( br1970.match, br1980.match, br1991.match, br2000.match, br2010.match )
 
+  match.dat[, reg := ifelse( reg == 'Central-West', 'Midwest', reg ) ]
+  
   match.dat <- 
     rbind(
       match.dat %>% copy,
       match.dat[, reg:= 'Brazil' ] 
     )
   
-
   # 2.2 Compute CFR for couples with wheigts 
   cfrpair.eval <- 
     function( match.dat ,
@@ -302,9 +303,9 @@ require(ggplot2)
     ft_tab1 <- 
       add_header_row( ft_tab1, 
                       values = c("Female", "Male", 
-                                 "1925-39", "1940-54", 
-                                 "1955-69", "1925-39", 
-                                 "1940-54", "1955-69" ), 
+                                 "1925-1939", "1940-1954", 
+                                 "1955-1969", "1925-1939", 
+                                 "1940-1954", "1955-1969" ), 
                       top = FALSE )
     
     ft_tab1 <- 
@@ -321,7 +322,7 @@ require(ggplot2)
   }
   
   tab1_br <- preptab_docx( tab1[ reg == 'Brazil' ] )
-  tab2_co <- preptab_docx( tab1[ reg == 'Central-West' ] )
+  tab2_co <- preptab_docx( tab1[ reg == 'Midwest' ] )
   tab3_nne <- preptab_docx( tab1[ reg == 'North-Northeast' ] )
   tab4_sse <- preptab_docx( tab1[ reg == 'South-Southeast' ] )
   
@@ -383,14 +384,14 @@ require(ggplot2)
         data.table(
           effect = c('','',''),
           diff   = c(OCFR1,OCFR2,OCFR3),
-          info   = c('CFR(1925-39)','CFR(1940-54)','CFR(1955-69)')
+          info   = c('CFR(1925-1939)','CFR(1940-1954)','CFR(1955-1969)')
         ),
         cfr_decomp( CFR1 = CFR1, CFR2 = CFR2, P1 = P1, P2 = P2 ) %>%
-          .[, info := c( 'CFR(1925-39) - CFR(1940-54)', 
+          .[, info := c( 'CFR(1925-1939) - CFR(1940-1954)', 
                          'CFR effect1', 
                          'Pairing composition effect1' ) ],
         cfr_decomp( CFR1 = CFR1, CFR2 = CFR3, P1 = P1, P2 = P3 ) %>%
-          .[, info := c( 'CFR(1925-39) - CFR(1955-69)', 
+          .[, info := c( 'CFR(1925-1939) - CFR(1955-1969)', 
                          'CFR effect2', 
                          'Pairing composition effect2' ) ],
         cfr_decomp( CFR1 = CFR2, CFR2 = CFR3, P1 = P2, P2 = P3 ) %>%
@@ -406,16 +407,16 @@ require(ggplot2)
   tab2 <- 
     rbind(
       preptab( data = dcastdat.c15, regname = 'Brazil' ),
-      preptab( data = dcastdat.c15, regname = 'Central-West' ),
+      preptab( data = dcastdat.c15, regname = 'Midwest' ),
       preptab( data = dcastdat.c15, regname = 'North-Northeast' ),
       preptab( data = dcastdat.c15, regname = 'South-Southeast' ) 
     ) %>% 
     dcast( info ~ reg, value.var = 'diff' ) %>%
     .[, info := factor( info,
-                        levels = c( "CFR(1925-39)", "CFR(1940-54)", "CFR(1955-69)",
-                                    "CFR(1925-39) - CFR(1940-54)", "CFR effect1", "Pairing composition effect1",
-                                    "CFR(1925-39) - CFR(1955-69)", "CFR effect2", "Pairing composition effect2",
-                                    "CFR(1940-54) - CFR(1955-69)", "CFR effect3", "Pairing composition effect3" ) )] %>%
+                        levels = c( "CFR(1925-1939)", "CFR(1940-1954)", "CFR(1955-1969)",
+                                    "CFR(1925-1939) - CFR(1940-1954)", "CFR effect1", "Pairing composition effect1",
+                                    "CFR(1925-1939) - CFR(1955-1969)", "CFR effect2", "Pairing composition effect2",
+                                    "CFR(1940-1954) - CFR(1955-1969)", "CFR effect3", "Pairing composition effect3" ) )] %>%
     setorder( info )
   
   tab2[ grepl( 'CFR effect', info ), 
@@ -461,7 +462,7 @@ require(ggplot2)
                             "Female: Less Than Primary",
                             ifelse ( educ.fem == 2, "Female: Primary",
                                      ifelse ( educ.fem == 3,
-                                              "Female: Secondary",
+                                              "Female: Secondary/Tertiary",
                                               "Female: Tertiary" 
                                               )
                                      )
@@ -471,7 +472,7 @@ require(ggplot2)
                             ifelse ( educ.mal == 2,
                                      "Primary",
                                      ifelse ( educ.mal == 3,
-                                              "Secondary",
+                                              "Secondary/Tertiary",
                                               "Tertiary"
                                               )
                                      )
@@ -513,12 +514,12 @@ require(ggplot2)
           color = ""
           ) +
         scale_color_manual( 
-          labels = c( "Less than Primary", "Primary", "Secondary", "Tertiary" ), 
+          labels = c( "Less than Primary", "Primary", "Secondary/Tertiary", "Tertiary" ), 
           values = c( "black", "gray35", "tomato3", "navyblue" ),
           name = "Male Educational\nAttainment Level" 
           ) +
         scale_linetype_manual( 
-          labels = c( "Less than Primary", "Primary", "Secondary", "Tertiary" ), 
+          labels = c( "Less than Primary", "Primary", "Secondary/Tertiary", "Tertiary" ), 
           values = c( "solid", "longdash", "dashed", "dotted" ),
           name = "Male Educational\nAttainment Level" 
         ) +
@@ -610,12 +611,12 @@ require(ggplot2)
           color = ""
         ) +
         scale_color_manual( 
-          labels = c( "Brazil", "Central-West", "North-Northeast", "South-Southeast" ), 
+          labels = c( "Brazil", "Midwest", "North-Northeast", "South-Southeast" ), 
           values = c( "black", "gray55", "tomato2", "steelblue4" ),
           name = "" 
         ) +
         scale_linetype_manual( 
-          labels = c( "Brazil", "Central-West", "North-Northeast", "South-Southeast" ), 
+          labels = c( "Brazil", "Midwest", "North-Northeast", "South-Southeast" ), 
           values = c( "solid", "longdash", "dashed", "dotted" ),
           name = "" 
         ) +

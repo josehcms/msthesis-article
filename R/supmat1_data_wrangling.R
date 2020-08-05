@@ -25,7 +25,7 @@ cpl.match <-
         '2' = 'North-Northeast',
         '3' = 'South-Southeast',
         '4' = 'South-Southeast',
-        '5' = 'Central-West'
+        '5' = 'Midwest'
       )
 
     setDT(ipums.dat)
