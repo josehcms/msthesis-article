@@ -1,0 +1,1 @@
+pandoc main.knit.md -o main.docx --bibliography bibliography.bib --csl demographic-research.csl --reference-doc reference.docx
