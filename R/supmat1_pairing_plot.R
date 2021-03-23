@@ -232,6 +232,12 @@ cfr15_tab <-
   setorder( Region, FemCohort15, EducMale, EducFemale ) %>%
   dcast( Region + EducMale + EducFemale ~ FemCohort15,
          value.var = 'CFR15' )
+
+# prepare flextables
+require(flextable)
+require(officer)
+
+
 ##################################################################
 
 ### 5. Cohort Fert Plot #-----------------------------------------
@@ -308,7 +314,7 @@ cfr5_married_fem_tab <-
                         "Female: Primary",
                         "Female: Secondary/Tertiary" ) ) ]
 
-cfr5_all_fem_tab <- 
+cfr5_educ_fem_tab <- 
   datBRAll[ ParityFlag == 0, 
             list(
               Region,
@@ -337,17 +343,84 @@ cfr5_all_fem_tab <-
                         "Female: Primary",
                         "Female: Secondary/Tertiary" ) ) ]
 
+cfr5_all_fem_tab <- 
+  datBRAll[ ParityFlag == 0, 
+            list(
+              Region,
+              EducFemale = dic_educ[ as.character( EducFemale ) ],
+              ParityCor,
+              FemCohort5 = as.numeric( paste0( FemCohort5 ) ),
+              SampWeight
+            ) ] %>%
+  .[ , 
+     list(
+       CFR5 = sum( ParityCor * SampWeight ) / sum( SampWeight )
+     ),
+     .( Region, FemCohort5 ) ]  %>%
+  setorder( Region, FemCohort5 )
+
+cfr5_all_fem_tab <- 
+  rbind(
+    cfr5_all_fem_tab %>% copy %>%
+      .[ , EducFemale := 'Female: Less Than Primary'],
+    cfr5_all_fem_tab %>% copy %>%
+      .[ , EducFemale := 'Female: Primary'],
+    cfr5_all_fem_tab %>% copy %>%
+      .[ , EducFemale := 'Female: Secondary/Tertiary']
+  ) %>%
+  .[ , EducFemale := factor( EducFemale,
+                             levels = c( "Female: Less Than Primary",
+                                         "Female: Primary",
+                                         "Female: Secondary/Tertiary" ) ) ]
+                      
+cfr5_all_marfem_tab <- 
+  datBRMatched[ ParityFlag == 0, 
+                list(
+                  Region,
+                  EducFemale = dic_educ[ as.character( EducFemale ) ],
+                  ParityCor,
+                  FemCohort5 = as.numeric( paste0( FemCohort5 ) ),
+                  SampWeight
+                ) ] %>%
+  .[ , 
+     list(
+       CFR5 = sum( ParityCor * SampWeight ) / sum( SampWeight )
+     ),
+     .( Region, FemCohort5 ) ]  %>%
+  setorder( Region, FemCohort5 )
+           
+ 
+cfr5_all_marfem_tab <- 
+  rbind(
+    cfr5_all_marfem_tab %>% copy %>%
+      .[ , EducFemale := 'Female: Less Than Primary'],
+    cfr5_all_marfem_tab %>% copy %>%
+      .[ , EducFemale := 'Female: Primary'],
+    cfr5_all_marfem_tab %>% copy %>%
+      .[ , EducFemale := 'Female: Secondary/Tertiary']
+  ) %>%
+  .[ , EducFemale := factor( EducFemale,
+                             levels = c( "Female: Less Than Primary",
+                                         "Female: Primary",
+                                         "Female: Secondary/Tertiary" ) ) ]
+
 shape_legend <- 
   data.table(
     EducFemale = c( "Female: Secondary/Tertiary", 
-                 "Female: Secondary/Tertiary" ),
-    FemCohort5 = c( 1926, 1941 ),
-    CFR5 = c( 6, 6 ),
-    lab  = c( 'All women', 'Women in union' )
+                    "Female: Secondary/Tertiary", 
+                    "Female: Primary", 
+                    "Female: Primary" ),
+    FemCohort5 = c( 1965, 1965, 1965, 1965 ),
+    CFR5 = c( 7, 6.5, 7, 6.5 ),
+    lab  = c( 'All women by education category', 
+              'Women in union by education category',
+              'All women (overall)',
+              'Women in union (overall)' )
   )
 
 plot_cfr5_br <- 
   ggplot() +
+  # 1: replacement fertility
   geom_hline(
     yintercept = 2.1,
     size = 0.5,
@@ -355,6 +428,7 @@ plot_cfr5_br <-
     linetype = 'dashed',
     alpha = 0.90 
   ) +
+  # 2: Educational Pairing CFR
   geom_line( data = cfr5_pair_tab[ Region == 'Brazil' ], 
              aes( 
                x = FemCohort5,
@@ -364,6 +438,7 @@ plot_cfr5_br <-
                group    = EducMale
              ),
              size = 1 ) +
+  # 3: All Married Females CFR
   geom_point( data = cfr5_married_fem_tab[ Region == 'Brazil' ], 
               aes( 
                 x = FemCohort5,
@@ -372,8 +447,9 @@ plot_cfr5_br <-
               size  = 2,
               color = 'gray51',
               shape = 16 ) +
+  # 3: Married Females CFR legend
   geom_point( 
-    data = data.table( x = 1925, y = 6,
+    data = data.table( x = 1930, y = 7,
                        EducFemale = "Female: Secondary/Tertiary" ),
     aes( 
       x = x,
@@ -383,7 +459,8 @@ plot_cfr5_br <-
     color = 'gray51',
     shape = 4
   ) +
-  geom_point( data = cfr5_all_fem_tab[ Region == 'Brazil' ], 
+  # 4: All females CFR by educ group
+  geom_point( data = cfr5_educ_fem_tab[ Region == 'Brazil' ], 
               aes( 
                 x = FemCohort5,
                 y = CFR5
@@ -391,8 +468,9 @@ plot_cfr5_br <-
               size  = 2,
               color = 'gray51',
               shape = 4 ) +
+  # 4: All females CFR by educ group legend
   geom_point( 
-    data = data.table( x = 1940, y = 6,
+    data = data.table( x = 1925, y = 6.5,
                        EducFemale = "Female: Secondary/Tertiary" ),
     aes( 
       x = x,
@@ -402,14 +480,63 @@ plot_cfr5_br <-
     color = 'gray51',
     shape = 16
     ) +
+  # 5: All females CFR 
+  geom_line( data = cfr5_all_fem_tab[ Region == 'Brazil' ], 
+              aes( 
+                x = FemCohort5,
+                y = CFR5
+              ),
+              size  = 1.25,
+              color = 'steelblue4',
+              alpha = 0.25 ) +
+  # 5: All females CFR legend
+  geom_segment( 
+    data = data.table( x1 = 1940, x2 = 1944,
+                       y1 = 7, y2 = 7,
+                       EducFemale = "Female: Primary" ),
+    aes( 
+      x    = x1,
+      xend = x2,
+      y    = y1,
+      yend = y2
+    ),
+    size  = 1.25,
+    color = 'steelblue4',
+    alpha = 0.25
+  ) +
+  # 5: All married females CFR 
+  geom_line( data = cfr5_all_marfem_tab[ Region == 'Brazil' ], 
+             aes( 
+               x = FemCohort5,
+               y = CFR5
+             ),
+             size  = 1.25,
+             color = 'orange',
+             alpha = 0.40,
+             linetype = 'dashed') +
+  # 6: All married females CFR legend
+  geom_segment( 
+    data = data.table( x1 = 1935, x2 = 1938,
+                       y1 = 6.5, y2 = 6.5,
+                       EducFemale = "Female: Primary" ),
+    aes( 
+      x    = x1,
+      xend = x2,
+      y    = y1,
+      yend = y2
+    ),
+    size  = 1.25,
+    color = 'orange',
+    alpha = 0.40
+  ) +
   geom_text(
     data = shape_legend,
     aes( x = FemCohort5,
          y = CFR5,
          label = lab 
          ),
-    hjust = 0,
-    size = 3.6
+    hjust = 1,
+    size = 3
   ) +
   facet_wrap( ~ EducFemale, nrow = 1 ) + 
   labs( 
@@ -452,7 +579,7 @@ plot_cfr5_br <-
   ) +
   scale_y_continuous( 
     breaks = seq( 1, 15, 1 ),
-    limits = c( 1.5, 6.5 )
+    limits = c( 1.5, 7 )
   ) +
   scale_x_continuous( 
     breaks = seq( 1925, 1965, 5 ),
@@ -461,6 +588,7 @@ plot_cfr5_br <-
 
 plot_cfr5_sse <- 
   ggplot() +
+  # 1: replacement fertility
   geom_hline(
     yintercept = 2.1,
     size = 0.5,
@@ -468,6 +596,7 @@ plot_cfr5_sse <-
     linetype = 'dashed',
     alpha = 0.90 
   ) +
+  # 2: Educational Pairing CFR
   geom_line( data = cfr5_pair_tab[ Region == 'South-Southeast' ], 
              aes( 
                x = FemCohort5,
@@ -477,6 +606,7 @@ plot_cfr5_sse <-
                group    = EducMale
              ),
              size = 1 ) +
+  # 3: All Married Females CFR
   geom_point( data = cfr5_married_fem_tab[ Region == 'South-Southeast' ], 
               aes( 
                 x = FemCohort5,
@@ -485,8 +615,9 @@ plot_cfr5_sse <-
               size  = 2,
               color = 'gray51',
               shape = 16 ) +
+  # 3: Married Females CFR legend
   geom_point( 
-    data = data.table( x = 1925, y = 6,
+    data = data.table( x = 1930, y = 7,
                        EducFemale = "Female: Secondary/Tertiary" ),
     aes( 
       x = x,
@@ -496,7 +627,8 @@ plot_cfr5_sse <-
     color = 'gray51',
     shape = 4
   ) +
-  geom_point( data = cfr5_all_fem_tab[ Region == 'South-Southeast' ], 
+  # 4: All females CFR by educ group
+  geom_point( data = cfr5_educ_fem_tab[ Region == 'South-Southeast' ], 
               aes( 
                 x = FemCohort5,
                 y = CFR5
@@ -504,8 +636,9 @@ plot_cfr5_sse <-
               size  = 2,
               color = 'gray51',
               shape = 4 ) +
+  # 4: All females CFR by educ group legend
   geom_point( 
-    data = data.table( x = 1940, y = 6,
+    data = data.table( x = 1925, y = 6.5,
                        EducFemale = "Female: Secondary/Tertiary" ),
     aes( 
       x = x,
@@ -515,14 +648,63 @@ plot_cfr5_sse <-
     color = 'gray51',
     shape = 16
   ) +
+  # 5: All females CFR 
+  geom_line( data = cfr5_all_fem_tab[ Region == 'South-Southeast' ], 
+             aes( 
+               x = FemCohort5,
+               y = CFR5
+             ),
+             size  = 1.25,
+             color = 'steelblue4',
+             alpha = 0.25 ) +
+  # 5: All females CFR legend
+  geom_segment( 
+    data = data.table( x1 = 1940, x2 = 1944,
+                       y1 = 7, y2 = 7,
+                       EducFemale = "Female: Primary" ),
+    aes( 
+      x    = x1,
+      xend = x2,
+      y    = y1,
+      yend = y2
+    ),
+    size  = 1.25,
+    color = 'steelblue4',
+    alpha = 0.25
+  ) +
+  # 5: All married females CFR 
+  geom_line( data = cfr5_all_marfem_tab[ Region == 'South-Southeast' ], 
+             aes( 
+               x = FemCohort5,
+               y = CFR5
+             ),
+             size  = 1.25,
+             color = 'orange',
+             alpha = 0.40,
+             linetype = 'dashed') +
+  # 6: All married females CFR legend
+  geom_segment( 
+    data = data.table( x1 = 1935, x2 = 1938,
+                       y1 = 6.5, y2 = 6.5,
+                       EducFemale = "Female: Primary" ),
+    aes( 
+      x    = x1,
+      xend = x2,
+      y    = y1,
+      yend = y2
+    ),
+    size  = 1.25,
+    color = 'orange',
+    alpha = 0.40
+  ) +
   geom_text(
     data = shape_legend,
     aes( x = FemCohort5,
          y = CFR5,
          label = lab 
     ),
-    hjust = 0,
-    size = 3.6
+    hjust = 1,
+    size = 3
   ) +
   facet_wrap( ~ EducFemale, nrow = 1 ) + 
   labs( 
@@ -552,7 +734,7 @@ plot_cfr5_sse <-
     axis.title       = element_text( size = 13, color = 'black', face = 'bold' ),
     legend.title     = element_text( size = 13, color = 'black', face = 'bold' ),
     legend.text      = element_text( size = 12, color = 'black'  ),
-    strip.text       = element_text( size = 12, color = 'black'   ),
+    strip.text       = element_text( size = 12, color = 'black' ),
     strip.background = element_rect( fill = 'gray90', 
                                      color = 'white' ),
     panel.grid.major = element_line( colour = "gray65", 
@@ -565,24 +747,31 @@ plot_cfr5_sse <-
   ) +
   scale_y_continuous( 
     breaks = seq( 1, 15, 1 ),
-    limits = c( 1.5, 6.5 )
+    limits = c( 1.5, 7 )
   ) +
   scale_x_continuous( 
     breaks = seq( 1925, 1965, 5 ),
     limits = c( 1925, 1965 )
   ) 
 
+
 shape_legend <- 
   data.table(
     EducFemale = c( "Female: Secondary/Tertiary", 
-                    "Female: Secondary/Tertiary" ),
-    FemCohort5 = c( 1926, 1941 ),
-    CFR5 = c( 8, 8 ),
-    lab  = c( 'All women', 'Women in union' )
+                    "Female: Secondary/Tertiary", 
+                    "Female: Primary", 
+                    "Female: Primary" ),
+    FemCohort5 = c( 1965, 1965, 1965, 1965 ),
+    CFR5 = c( 8.5, 8, 8.5, 8 ),
+    lab  = c( 'All women by education category', 
+              'Women in union by education category',
+              'All women (overall)',
+              'Women in union (overall)' )
   )
 
 plot_cfr5_nne <- 
   ggplot() +
+  # 1: replacement fertility
   geom_hline(
     yintercept = 2.1,
     size = 0.5,
@@ -590,6 +779,7 @@ plot_cfr5_nne <-
     linetype = 'dashed',
     alpha = 0.90 
   ) +
+  # 2: Educational Pairing CFR
   geom_line( data = cfr5_pair_tab[ Region == 'North-Northeast' ], 
              aes( 
                x = FemCohort5,
@@ -599,6 +789,7 @@ plot_cfr5_nne <-
                group    = EducMale
              ),
              size = 1 ) +
+  # 3: All Married Females CFR
   geom_point( data = cfr5_married_fem_tab[ Region == 'North-Northeast' ], 
               aes( 
                 x = FemCohort5,
@@ -607,8 +798,9 @@ plot_cfr5_nne <-
               size  = 2,
               color = 'gray51',
               shape = 16 ) +
+  # 3: Married Females CFR legend
   geom_point( 
-    data = data.table( x = 1925, y = 8,
+    data = data.table( x = 1930, y = 8.5,
                        EducFemale = "Female: Secondary/Tertiary" ),
     aes( 
       x = x,
@@ -618,7 +810,8 @@ plot_cfr5_nne <-
     color = 'gray51',
     shape = 4
   ) +
-  geom_point( data = cfr5_all_fem_tab[ Region == 'North-Northeast' ], 
+  # 4: All females CFR by educ group
+  geom_point( data = cfr5_educ_fem_tab[ Region == 'North-Northeast' ], 
               aes( 
                 x = FemCohort5,
                 y = CFR5
@@ -626,8 +819,9 @@ plot_cfr5_nne <-
               size  = 2,
               color = 'gray51',
               shape = 4 ) +
+  # 4: All females CFR by educ group legend
   geom_point( 
-    data = data.table( x = 1940, y = 8,
+    data = data.table( x = 1925, y = 8,
                        EducFemale = "Female: Secondary/Tertiary" ),
     aes( 
       x = x,
@@ -637,121 +831,54 @@ plot_cfr5_nne <-
     color = 'gray51',
     shape = 16
   ) +
-  geom_text(
-    data = shape_legend,
-    aes( x = FemCohort5,
-         y = CFR5,
-         label = lab 
-    ),
-    hjust = 0,
-    size = 3.6
-  ) +
-  facet_wrap( ~ EducFemale, nrow = 1 ) + 
-  labs( 
-    x = "\nFemale birth cohort", 
-    y = "Cohort fertility rates (CFR)\n", 
-    color = ""
-  ) +
-  scale_color_manual( 
-    labels = c( "Less than primary", "Primary", 
-                "Secondary/Tertiary", "Tertiary" ), 
-    values = c( "black", "gray35", "tomato3", "navyblue" ),
-    name = "Male educational\nattainment level" 
-  ) +
-  scale_linetype_manual( 
-    labels = c( "Less than primary", "Primary", 
-                "Secondary/Tertiary", "Tertiary" ), 
-    values = c( "solid", "longdash", 
-                "dashed", "dotted" ),
-    name = "Male educational\nattainment level" 
-  ) +
-  theme_bw() +
-  theme(
-    legend.position  = "bottom",
-    axis.text.y      = element_text( size = 12, color = 'black' ),
-    axis.text.x      = element_text( size = 12, angle = 90,
-                                     vjust = 0.5, color = 'black' ),
-    axis.title       = element_text( size = 13, color = 'black', face = 'bold' ),
-    plot.title       = element_text( size = 22, color = 'black' ),
-    plot.caption     = element_text( size = 16, color = 'black' ),
-    plot.subtitle    = element_text( size = 28, color = 'black' ),
-    legend.title     = element_text( size = 13, color = 'black', face = 'bold' ),
-    legend.text      = element_text( size = 12, color = 'black' ),
-    strip.text       = element_text( size = 12, color = 'black' ),
-    strip.background = element_rect( fill = 'gray90', 
-                                     color = 'white' ),
-    panel.grid.major = element_line( colour = "gray65", 
-                                     size = 0.15, linetype = 'dotted' ),
-    panel.grid.minor = element_line( colour = "gray65", 
-                                     size = 0.15, linetype = 'dotted' ),
-    legend.direction = 'horizontal',
-    legend.background = element_rect( color = 'white', 
-                                      fill = 'transparent', size = 0.21 )
-  ) +
-  scale_y_continuous( 
-    breaks = seq( 1, 15, 1 ),
-    limits = c( 1.5, 8.5 )
-  ) +
-  scale_x_continuous( 
-    breaks = seq( 1925, 1965, 5 ),
-    limits = c( 1925, 1965 )
-  ) 
-
-plot_cfr5_mid <- 
-  ggplot() +
-  geom_hline(
-    yintercept = 2.1,
-    size = 0.5,
-    color = 'skyblue',
-    linetype = 'dashed',
-    alpha = 0.90 
-  ) +
-  geom_line( data = cfr5_pair_tab[ Region == 'Midwest' ], 
+  # 5: All females CFR 
+  geom_line( data = cfr5_all_fem_tab[ Region == 'North-Northeast' ], 
              aes( 
                x = FemCohort5,
-               y = CFR5,
-               color    = EducMale,
-               linetype = EducMale,
-               group    = EducMale
+               y = CFR5
              ),
-             size = 1 ) +
-  geom_point( data = cfr5_married_fem_tab[ Region == 'Midwest' ], 
-              aes( 
-                x = FemCohort5,
-                y = CFR5
-              ),
-              size  = 2,
-              color = 'gray51',
-              shape = 16 ) +
-  geom_point( 
-    data = data.table( x = 1925, y = 8,
-                       EducFemale = "Female: Secondary/Tertiary" ),
+             size  = 1.25,
+             color = 'steelblue4',
+             alpha = 0.25 ) +
+  # 5: All females CFR legend
+  geom_segment( 
+    data = data.table( x1 = 1940, x2 = 1944,
+                       y1 = 8.5, y2 = 8.5,
+                       EducFemale = "Female: Primary" ),
     aes( 
-      x = x,
-      y = y 
+      x    = x1,
+      xend = x2,
+      y    = y1,
+      yend = y2
     ),
-    size  = 2,
-    color = 'gray51',
-    shape = 4
+    size  = 1.25,
+    color = 'steelblue4',
+    alpha = 0.25
   ) +
-  geom_point( data = cfr5_all_fem_tab[ Region == 'Midwest' ], 
-              aes( 
-                x = FemCohort5,
-                y = CFR5
-              ),
-              size  = 2,
-              color = 'gray51',
-              shape = 4 ) +
-  geom_point( 
-    data = data.table( x = 1940, y = 8,
-                       EducFemale = "Female: Secondary/Tertiary" ),
+  # 5: All married females CFR 
+  geom_line( data = cfr5_all_marfem_tab[ Region == 'Brazil' ], 
+             aes( 
+               x = FemCohort5,
+               y = CFR5
+             ),
+             size  = 1.25,
+             color = 'orange',
+             alpha = 0.40,
+             linetype = 'dashed') +
+  # 6: All married females CFR legend
+  geom_segment( 
+    data = data.table( x1 = 1935, x2 = 1938,
+                       y1 = 8, y2 = 8,
+                       EducFemale = "Female: Primary" ),
     aes( 
-      x = x,
-      y = y 
+      x    = x1,
+      xend = x2,
+      y    = y1,
+      yend = y2
     ),
-    size  = 2,
-    color = 'gray51',
-    shape = 16
+    size  = 1.25,
+    color = 'orange',
+    alpha = 0.40
   ) +
   geom_text(
     data = shape_legend,
@@ -759,8 +886,8 @@ plot_cfr5_mid <-
          y = CFR5,
          label = lab 
     ),
-    hjust = 0,
-    size = 3.6
+    hjust = 1,
+    size = 3
   ) +
   facet_wrap( ~ EducFemale, nrow = 1 ) + 
   labs( 
@@ -803,7 +930,175 @@ plot_cfr5_mid <-
   ) +
   scale_y_continuous( 
     breaks = seq( 1, 15, 1 ),
-    limits = c( 1.5, 8.5 )
+    limits = c( 1.5, 9 )
+  ) +
+  scale_x_continuous( 
+    breaks = seq( 1925, 1965, 5 ),
+    limits = c( 1925, 1965 )
+  ) 
+
+plot_cfr5_mid <- 
+  ggplot() +
+  # 1: replacement fertility
+  geom_hline(
+    yintercept = 2.1,
+    size = 0.5,
+    color = 'skyblue',
+    linetype = 'dashed',
+    alpha = 0.90 
+  ) +
+  # 2: Educational Pairing CFR
+  geom_line( data = cfr5_pair_tab[ Region == 'Midwest' ], 
+             aes( 
+               x = FemCohort5,
+               y = CFR5,
+               color    = EducMale,
+               linetype = EducMale,
+               group    = EducMale
+             ),
+             size = 1 ) +
+  # 3: All Married Females CFR
+  geom_point( data = cfr5_married_fem_tab[ Region == 'Midwest' ], 
+              aes( 
+                x = FemCohort5,
+                y = CFR5
+              ),
+              size  = 2,
+              color = 'gray51',
+              shape = 16 ) +
+  # 3: Married Females CFR legend
+  geom_point( 
+    data = data.table( x = 1930, y = 8.5,
+                       EducFemale = "Female: Secondary/Tertiary" ),
+    aes( 
+      x = x,
+      y = y 
+    ),
+    size  = 2,
+    color = 'gray51',
+    shape = 4
+  ) +
+  # 4: All females CFR by educ group
+  geom_point( data = cfr5_educ_fem_tab[ Region == 'Midwest' ], 
+              aes( 
+                x = FemCohort5,
+                y = CFR5
+              ),
+              size  = 2,
+              color = 'gray51',
+              shape = 4 ) +
+  # 4: All females CFR by educ group legend
+  geom_point( 
+    data = data.table( x = 1925, y = 8,
+                       EducFemale = "Female: Secondary/Tertiary" ),
+    aes( 
+      x = x,
+      y = y 
+    ),
+    size  = 2,
+    color = 'gray51',
+    shape = 16
+  ) +
+  # 5: All females CFR 
+  geom_line( data = cfr5_all_fem_tab[ Region == 'Midwest' ], 
+             aes( 
+               x = FemCohort5,
+               y = CFR5
+             ),
+             size  = 1.25,
+             color = 'steelblue4',
+             alpha = 0.25 ) +
+  # 5: All females CFR legend
+  geom_segment( 
+    data = data.table( x1 = 1940, x2 = 1944,
+                       y1 = 8.5, y2 = 8.5,
+                       EducFemale = "Female: Primary" ),
+    aes( 
+      x    = x1,
+      xend = x2,
+      y    = y1,
+      yend = y2
+    ),
+    size  = 1.25,
+    color = 'steelblue4',
+    alpha = 0.25
+  ) +
+  # 5: All married females CFR 
+  geom_line( data = cfr5_all_marfem_tab[ Region == 'Midwest' ], 
+             aes( 
+               x = FemCohort5,
+               y = CFR5
+             ),
+             size  = 1.25,
+             color = 'orange',
+             alpha = 0.40,
+             linetype = 'dashed') +
+  # 6: All married females CFR legend
+  geom_segment( 
+    data = data.table( x1 = 1935, x2 = 1938,
+                       y1 = 8, y2 = 8,
+                       EducFemale = "Female: Primary" ),
+    aes( 
+      x    = x1,
+      xend = x2,
+      y    = y1,
+      yend = y2
+    ),
+    size  = 1.25,
+    color = 'orange',
+    alpha = 0.40
+  ) +
+  geom_text(
+    data = shape_legend,
+    aes( x = FemCohort5,
+         y = CFR5,
+         label = lab 
+    ),
+    hjust = 1,
+    size = 3
+  ) +
+  facet_wrap( ~ EducFemale, nrow = 1 ) + 
+  labs( 
+    x = "\nFemale birth cohort", 
+    y = "Cohort fertility rates (CFR)\n", 
+    color = ""
+  ) +
+  scale_color_manual( 
+    labels = c( "Less than primary", "Primary", 
+                "Secondary/Tertiary", "Tertiary" ), 
+    values = c( "black", "gray35", "tomato3", "navyblue" ),
+    name = "Male educational\nattainment level" 
+  ) +
+  scale_linetype_manual( 
+    labels = c( "Less than primary", "Primary", 
+                "Secondary/Tertiary", "Tertiary" ), 
+    values = c( "solid", "longdash", 
+                "dashed", "dotted" ),
+    name = "Male educational\nattainment level" 
+  ) +
+  theme_bw() +
+  theme(
+    legend.position  = "bottom",
+    axis.text.y      = element_text( size = 12, color = 'black'  ),
+    axis.text.x      = element_text( size = 12, angle = 90,
+                                     vjust = 0.5, color = 'black' ),
+    axis.title       = element_text( size = 13, color = 'black', face = 'bold' ),
+    legend.title     = element_text( size = 13, color = 'black', face = 'bold' ),
+    legend.text      = element_text( size = 12, color = 'black'  ),
+    strip.text       = element_text( size = 12, color = 'black' ),
+    strip.background = element_rect( fill = 'gray90', 
+                                     color = 'white' ),
+    panel.grid.major = element_line( colour = "gray65", 
+                                     size = 0.15, linetype = 'dotted' ),
+    panel.grid.minor = element_line( colour = "gray65", 
+                                     size = 0.15, linetype = 'dotted' ),
+    legend.direction = 'horizontal',
+    legend.background = element_rect( color = 'white', 
+                                      fill = 'transparent', size = 0.21 )
+  ) +
+  scale_y_continuous( 
+    breaks = seq( 1, 15, 1 ),
+    limits = c( 1.5, 9 )
   ) +
   scale_x_continuous( 
     breaks = seq( 1925, 1965, 5 ),
@@ -1064,4 +1359,88 @@ ggsave(
   plot = plot_decomp( reg = 'Midwest' )
 )
 
-###############################################################
+#################################################################
+
+
+### 7. Prepare flex table #--------------------------------------
+
+dat_decomp
+
+tab_rp <- 
+  dat_decomp[ , 
+                list(
+                  reg = Region, 
+                  educ.mal = paste0( EducMale ),
+                  educ.fem = paste0( EducFemale ),
+                  prevc1 = format( round( 100 * p1, 2 ), nsmall = 2 ), 
+                  prevc2 = format( round( 100 * p2, 2 ), nsmall = 2 ),
+                  prevc3 = format( round( 100 * p3, 2 ), nsmall = 2 ),
+                  cfrc1  = format( round( r1, 2 ), nsmall = 2 ),
+                  cfrc2  = format( round( r2, 2 ), nsmall = 2 ),
+                  cfrc3  = format( round( r3, 2 ), nsmall = 2 ) 
+                )]
+
+preptab_docx <- function( tab1 ){
+  
+  require(flextable)
+  require(officer)
+  
+  ft_tab1 <- flextable( tab1[,2:9] )
+  
+  ft_tab1 <- set_header_labels( ft_tab1, 
+                                educ.fem = "Education",
+                                educ.mal = "Education", 
+                                prevc1 = "Prevalence (%)",
+                                prevc2 = "Prevalence (%)" , 
+                                prevc3 = "Prevalence (%)",
+                                cfrc1 = "CFR" , 
+                                cfrc2 = "CFR",
+                                cfrc3 = "CFR" )
+  
+  ft_tab1 <- 
+    merge_at( ft_tab1, 
+              i = 1, 
+              j = 1:2, 
+              part = "header" )
+  ft_tab1 <- 
+    merge_at( ft_tab1, 
+              i = 1, 
+              j = 3:5, 
+              part = "header" )
+  
+  ft_tab1 <- 
+    merge_at( ft_tab1, 
+              i = 1, 
+              j = 6:8, 
+              part = "header" )
+  
+  ft_tab1 <- 
+    add_header_row( ft_tab1, 
+                    values = c("Female", "Male", 
+                               "1925-1939", "1940-1954", 
+                               "1955-1969", "1925-1939", 
+                               "1940-1954", "1955-1969" ), 
+                    top = FALSE )
+  
+  ft_tab1 <- 
+    align( ft_tab1, align = "center", part = "all" )
+  
+  ft_tab1 <- 
+    hline( ft_tab1, 
+           i = 2,
+           border = fp_border( color = 'black' ),
+           part = 'header' )
+  
+  return(ft_tab1)
+  
+}
+
+tab1_br <- preptab_docx( tab_rp[ reg == 'Brazil' ] )
+tab2_co <- preptab_docx( tab_rp[ reg == 'Midwest' ] )
+tab3_nne <- preptab_docx( tab_rp[ reg == 'North-Northeast' ] )
+tab4_sse <- preptab_docx( tab_rp[ reg == 'South-Southeast' ] )
+
+save( tab1_br, tab2_co, tab3_nne, tab4_sse,
+      file =  'FIGS/tables1-4.RData')
+
+#################################################################

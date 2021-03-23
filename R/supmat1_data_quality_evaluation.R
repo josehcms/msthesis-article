@@ -80,46 +80,93 @@ EducNA_tab <-
 
 datBRMatched[ , n := 1 ]
 
-pairingComp_tab <- 
-  datBRMatched[ FemCohort15 %in% c( '1925', '1940', '1955' ) & 
+SampSizeTab <- 
+  datBRMatched[ FemCohort15 %in% c( 1925, 1940, 1955 ) & 
                   ! is.na( ParityFlag ) &
                   EducFemale %in% 1:4 &
                   EducMale %in% 1:4, ] %>%
   copy %>%
-  .[ ,
-     n_cohort := sum( SampWeight ),
-     .( Region, FemCohort15 ) ] %>%
-  .[ ,
-     EducMale := ifelse( EducMale == 4, 3, EducMale ) 
-  ] %>%
-  .[ ,
-     EducFemale := ifelse( EducFemale == 4, 3, EducFemale ) 
-  ] %>%
-  .[ ,
-     .( PairingP = 100 * round( sum( SampWeight ) / ( n_cohort ), 4 ),
-        n_cohort ),
-     .( Region, FemCohort15, EducMale, EducFemale ) ] %>%
-  unique %>%
-  setorder( Region, FemCohort15, EducMale, EducFemale ) %>% 
-  dcast( FemCohort15 + EducMale + EducFemale ~ Region, value.var = 'PairingP' ) 
-
-
-datBRMatched[ FemCohort15 %in% c( 1925, 1940, 1955 ) & 
-                ! is.na( ParityFlag ) &
-                EducFemale %in% 1:4 &
-                EducMale %in% 1:4, ] %>%
-  copy %>%
   .[ ,.N,
-     .( Region, Year, FemCohort15 ) ] %>%
-  dcast( FemCohort15 + Year ~ Region )
-
-
-datBRMatched[ FemCohort15 %in% c( '1925', '1940', '1955' ) & 
-                ! is.na( ParityFlag ) &
-                EducFemale %in% 1:4 &
-                EducMale %in% 1:4, ] %>%
-  copy %>%
-  .[ , round( mean( ParityCor ), 2 ),
      .( Region, Year, FemCohort5 ) ] %>%
   dcast( FemCohort5 + Year ~ Region )
+                
+
+##################################################################
+
+
+### Prepare flextables #------------------------------------------
+require(flextable)
+require(officer)
+
+tab_a1 <- 
+  SampSizeTab[ ,
+               list(
+                 `Cohort` = paste0( as.numeric( paste0( FemCohort5 ) ), 
+                                    '-',
+                                    as.numeric( paste0( 
+                                      ( FemCohort5  ) ) ) + 4 ),
+                 `Census Year` = Year,
+                 Brazil,
+                 Midwest,
+                 `North-Northeast`,
+                 `South-Southeast`
+               ) ] %>%
+  flextable() %>%
+  colformat_num( big.mark = '' ) %>%
+  align( align = "center", part = "all" ) %>%
+  hline( i = 1,
+         border = fp_border( color = 'black' ),
+         part = 'header' )
+
+tab_a2 <-
+  EducNA_tab[ ,
+              list(
+                `Census Year` = Year,
+                Brazil,
+                Midwest,
+                `North-Northeast`,
+                `South-Southeast`
+              ) ] %>%
+  flextable() %>%
+  colformat_num( big.mark = '' ) %>%
+  align( align = "center", part = "all" ) %>%
+  hline( i = 1,
+         border = fp_border( color = 'black' ),
+         part = 'header' )
+
+tab_a3 <-
+  parityNA_tab[ ,
+              list(
+                `Census Year` = Year,
+                Brazil,
+                Midwest,
+                `North-Northeast`,
+                `South-Southeast`
+              ) ] %>%
+  flextable() %>%
+  colformat_num( big.mark = '' ) %>%
+  align( align = "center", part = "all" ) %>%
+  hline( i = 1,
+         border = fp_border( color = 'black' ),
+         part = 'header' )
+
+tab_a4 <-
+  parityImp_tab[ ,
+                 list(
+                   `Census Year` = Year,
+                   Brazil,
+                   Midwest,
+                   `North-Northeast`,
+                   `South-Southeast`
+                 ) ] %>%
+  flextable() %>%
+  colformat_num( big.mark = '' ) %>%
+  align( align = "center", part = "all" ) %>%
+  hline( i = 1,
+         border = fp_border( color = 'black' ),
+         part = 'header' )
+
+save( tab_a1, tab_a2, tab_a3, tab_a4,
+      file =  'FIGS/tablesAppendix.RData')
+
 ##################################################################
